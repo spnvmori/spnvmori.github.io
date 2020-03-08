@@ -7,51 +7,72 @@
 </head>
 <body>
   <a-scene>
+    <!-- リソース準備 -->
     <a-assets>
-      <img id="cursorImage" crossOrigin="anonymous" src="https://raw.githubusercontent.com/spnvmori/spnvmori.github.io/master/webvr/images/stamp.png">
-    <!--
-      <img id="thumb001" crossOrigin="anonymous" src="images/001.jpg">
-      <img id="thumb002" crossOrigin="anonymous" src="images/002.jpg">
-      <img id="thumb003" crossOrigin="anonymous" src="images/003.jpg">
-    -->
-      <a-asset-item id="airplane-obj" src="https://spnvmori.github.io/webvr/images/airplane/11803_Airplane_v1_l1.obj"></a-asset-item>
-      <a-asset-item id="airplane-mtl" src="https://spnvmori.github.io/webvr/images/airplane/11803_Airplane_v1_l1.mtl"></a-asset-item>
-      <a-asset-item id="hotel-obj"    src="https://raw.githubusercontent.com/spnvmori/spnvmori.github.io/master/webvr/images/hotel/bina.obj"></a-asset-item>
-      <a-asset-item id="hotel-mtl"    src="https://raw.githubusercontent.com/spnvmori/spnvmori.github.io/master/webvr/images/hotel/bina.mtl"></a-asset-item>
-   
+      <!-- ローカルのimageがクロスドメインで読めないので、サーバ側の画像を読む https://spnvmori.github.io/webvr/images/ -->
+      <img id="cursor-image" crossOrigin="anonymous" src="images/stamp.png">
+      <a-asset-item id="airplane-obj" src="images/airplane/11803_Airplane_v1_l1.obj"></a-asset-item>
+      <a-asset-item id="airplane-mtl" src="images/airplane/11803_Airplane_v1_l1.mtl"></a-asset-item>
+      <a-asset-item id="hotel-obj"    src="images/hotel/bina.obj"></a-asset-item>
+      <a-asset-item id="hotel-mtl"    src="images/hotel/bina.mtl"></a-asset-item>
     </a-assets>
-    <a-sky src="https://spnvmori.github.io/webvr/images/sky.jpg" rotation="0 40 0"></a-sky>
-    <!--
-        <a-link href="index.html" title="My Homepage 002" position="-10 3 -5"></a-link>
 
-        <a-link href="#" title="海外ホテル" position="2 1 -5"></a-link>
+    <!-- 背景 -->
+    <a-sky src="images/sky.jpg" rotation="0 40 0"></a-sky>
 
-        <a-link href="https://google.com" title="My Homepage 003" position="10 1 -5"></a-link>
-    -->
-        <a-obj-model
-          src="#airplane-obj" mtl="#airplane-mtl"
-          position="5 5 -5" scale="0.002 0.002 0.002" rotation="-80 -180 0">
-        </a-obj-model>
-        <a-obj-model
-          src="#hotel-obj" mtl="#hotel-mtl"
-          position="-6 0.5 -5" scale="0.05 0.05 0.05" rotation="0 0 0">
-        </a-obj-model>
-  <a-camera id="camera">
-    <a-entity cursor="fuse: true; fuseTimeout: 500;"
-        position="0 0 -1"
-        geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-        material="color: blue; shader: flat; opacity: 0;"
-        >
-        <a-animation begin="click" easing="ease-in" attribute="scale" dur="1500"
-           fill="forwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
-        <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="1500"
-           fill="backwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
-    </a-entity>
-    <a-image src="#cursorImage" width="0.2" height="0.18" position="0 0 -.99"></a-image>
-  </a-camera>
-  
+    <!-- 飛行機 -->
+    <a-obj-model
+      src="#airplane-obj" mtl="#airplane-mtl"
+      position="5 5 -5" scale="0.002 0.002 0.002" rotation="-80 -180 0"
+      redirect="href: https://www.tour.ne.jp/j_air/"
+      cursor-motion>
+    </a-obj-model>
+    <!-- ホテル -->
+    <a-obj-model
+      src="#hotel-obj" mtl="#hotel-mtl"
+      position="-6 0.5 -5" scale="0.05 0.05 0.05" rotation="0 0 0"
+      redirect="href: https://www.tour.ne.jp/w_hotel/"
+      cursor-motion>
+    </a-obj-model>
+
+    <!-- カメラ -->
+    <a-camera id="camera">
+      <!-- ダミーカーソル -->
+      <a-cursor fuse="true" fuse-timeout="1500" scale="2 2" material="opacity: 0;"></a-cursor>
+      <!-- カーソル画像 -->
+      <a-image id="cursorImage" src="#cursor-image" width="0.2" height="0.18" position="0 0 -.99"></a-image>
+    </a-camera>
   </a-scene>
+
   <script>
+    // オブジェクトに設定したurlのリダイレクト
+    AFRAME.registerComponent('redirect', {
+      schema: {
+        href: {default: ''}
+      },
+      init() {
+        var data = this.data;
+        var el = this.el;
+        this.el.addEventListener('click', function () {
+          // navigate to another url
+          window.location = data.href;
+        });
+      }
+    });
+
+    // 3Dオブジェクトに反応してカーソルイメージを変更
+    AFRAME.registerComponent('cursor-motion', {
+      init: function () {
+        this.el.addEventListener('mouseenter', function () {
+          var cursorImage = document.querySelector('#cursorImage');
+          cursorImage.setAttribute('scale', '1.4 1.4 1.4');
+        });
+        this.el.addEventListener('mouseleave', function () {
+          var cursorImage = document.querySelector('#cursorImage');
+          cursorImage.setAttribute('scale', '1 1 1');
+        });
+      }
+    });
   </script>
 </body>
 </html>
