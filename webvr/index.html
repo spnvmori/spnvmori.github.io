@@ -10,6 +10,7 @@
     <!-- リソース準備 -->
     <a-assets>
       <!-- ローカルのimageがクロスドメインで読めないので、サーバ側の画像を読む https://spnvmori.github.io/webvr/images/ -->
+      <img id="sky-image" crossOrigin="anonymous" src="images/sky.jpg">
       <img id="cursor-image" crossOrigin="anonymous" src="images/stamp.png">
       <a-asset-item id="airplane-obj" src="images/airplane/11803_Airplane_v1_l1.obj"></a-asset-item>
       <a-asset-item id="airplane-mtl" src="images/airplane/11803_Airplane_v1_l1.mtl"></a-asset-item>
@@ -18,13 +19,14 @@
     </a-assets>
 
     <!-- 背景 -->
-    <a-sky src="images/sky.jpg" rotation="0 40 0"></a-sky>
+    <a-sky src="#sky-image" rotation="0 40 0"></a-sky>
 
     <!-- 飛行機 -->
     <a-obj-model
       src="#airplane-obj" mtl="#airplane-mtl"
       position="5 5 -5" scale="0.002 0.002 0.002" rotation="-80 -180 0"
       redirect="href: https://www.tour.ne.jp/j_air/"
+      animation__mouseenter="property: rotation; from: -80 -180 0; to: -440 -180 0; dur: 1000; easing: linear; startEvents: mouseenter;"
       cursor-motion>
     </a-obj-model>
     <!-- ホテル -->
@@ -32,7 +34,8 @@
       src="#hotel-obj" mtl="#hotel-mtl"
       position="-6 0.5 -5" scale="0.05 0.05 0.05" rotation="0 0 0"
       redirect="href: https://www.tour.ne.jp/w_hotel/"
-      cursor-motion>
+      cursor-motion
+      animation__mouseenter="property: rotation; from: 0 0 0; to: 0 -360 0; dur: 2000; easing: linear; startEvents: mouseenter;">
     </a-obj-model>
 
     <!-- カメラ -->
